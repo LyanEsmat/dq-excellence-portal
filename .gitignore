@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Editors
+.idea/
+.vscode/
+
+# Secrets
+.env
+.env.*
+
+# Uploaded and generated production files
+uploads/*
+data/*
+!uploads/.gitkeep
+!data/.gitkeep
+
+# Operating system files
+.DS_Store
+Thumbs.db

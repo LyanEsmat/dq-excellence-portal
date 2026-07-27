@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Data Quality Excellence Portal</title>
+
+    <style>
+        :root {
+            --black: #050807;
+            --surface: #0b1110;
+            --surface-2: #101817;
+            --surface-3: #151e1c;
+            --border: #293633;
+            --gold: #c4aa67;
+            --gold-light: #efd47e;
+            --text: #f5f7f6;
+            --muted: #9caeaa;
+            --green: #8cda45;
+            --green-dark: #1c3419;
+            --red: #ff6969;
+            --red-dark: #3c1919;
+            --orange: #f2b84b;
+            --blue: #65b7df;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--black);
+            color: var(--text);
+            font-family:
+                Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            min-height: 84px;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            background: rgba(3, 7, 6, 0.97);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            min-width: 360px;
+            gap: 18px;
+        }
+
+        .logo-window {
+            position: relative;
+            width: 106px;
+            height: 58px;
+            margin-left: 12px;
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+
+        .logo-window img {
+            position: absolute;
+            width: 280px;
+            height: 70px;
+            max-width: none;
+            left: -87px;
+            top: -6px;
+            object-fit: contain;
+        }
+
+        .brand-divider {
+            width: 1px;
+            height: 42px;
+            background: var(--border);
+        }
+
+        .brand-title {
+            font-size: 17px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatars {
+            display: flex;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            margin-left: -8px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            background: #111715;
+            color: var(--gold-light);
+            font-size: 12px;
+        }
+
+        .team-name {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .team-role {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .container {
+            width: min(1800px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 32px 0 60px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: var(--gold);
+            font-size: 12px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 46px);
+            line-height: 1.08;
+        }
+
+        .hero-description {
+            max-width: 770px;
+            margin: 12px 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .button {
+            min-height: 45px;
+            padding: 0 18px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .button:hover {
+            border-color: var(--gold);
+        }
+
+        .button.primary {
+            border-color: var(--gold);
+            background: var(--gold);
+            color: #090b09;
+            font-weight: 700;
+        }
+
+        .button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .status-message {
+            display: none;
+            margin-bottom: 18px;
+            padding: 13px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+        }
+
+        .status-message.success {
+            display: block;
+            border-color: #496f30;
+            color: var(--green);
+        }
+
+        .status-message.error {
+            display: block;
+            border-color: #713838;
+            color: var(--red);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(150px, 1fr));
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .kpi {
+            min-height: 120px;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .kpi:last-child {
+            border-right: 0;
+        }
+
+        .kpi-label {
+            color: #c9d2d0;
+            font-size: 12px;
+        }
+
+        .kpi-value {
+            margin-top: 10px;
+            color: var(--gold-light);
+            font-size: 31px;
+            line-height: 1;
+        }
+
+        .kpi-note {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .panel {
+            margin-top: 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .panel-header {
+            min-height: 52px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface-2);
+        }
+
+        .panel-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .section-number {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #090b09;
+            font-weight: 800;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .panel-count {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .panel-body {
+            padding: 16px;
+        }
+
+        .dimension-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(6, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .dimension-card {
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--surface-2);
+        }
+
+        .dimension-name {
+            color: #d8dfdd;
+            font-size: 12px;
+        }
+
+        .dimension-score {
+            margin: 9px 0 12px;
+            color: var(--gold-light);
+            font-size: 27px;
+            font-weight: 700;
+        }
+
+        .score-track {
+            height: 6px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #25302e;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(
+                90deg,
+                #759f32,
+                var(--gold-light)
+            );
+        }
+
+        .dimension-breakdown {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .dimension-breakdown strong {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: minmax(260px, 1fr) 190px 190px;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .input,
+        .select {
+            width: 100%;
+            height: 43px;
+            padding: 0 13px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            outline: none;
+            background: #07100e;
+            color: var(--text);
+        }
+
+        .input:focus,
+        .select:focus {
+            border-color: var(--gold);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            padding: 12px 11px;
+            border-bottom: 1px solid #222d2b;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #08100f;
+            color: #bfcac7;
+            font-weight: 500;
+        }
+
+        tbody tr:hover {
+            background: rgba(196, 170, 103, 0.05);
+        }
+
+        .wrap-cell {
+            min-width: 240px;
+            white-space: normal;
+            line-height: 1.5;
+        }
+
+        .score-cell {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-flex;
+            min-width: 92px;
+            min-height: 25px;
+            padding: 4px 10px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .badge.passed,
+        .badge.matched {
+            border-color: #496f30;
+            background: var(--green-dark);
+            color: var(--green);
+        }
+
+        .badge.failed,
+        .badge.not-matched {
+            border-color: #713838;
+            background: var(--red-dark);
+            color: var(--red);
+        }
+
+        .badge.not-executed,
+        .badge.needs-review {
+            border-color: #806329;
+            background: #352a16;
+            color: var(--orange);
+        }
+
+        .failure-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .failure-card {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--red);
+            border-radius: 6px;
+            background: var(--surface-2);
+        }
+
+        .failure-card.not-executed {
+            border-left-color: var(--orange);
+        }
+
+        .failure-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .failure-term {
+            font-weight: 700;
+        }
+
+        .failure-meta {
+            margin-top: 5px;
+            color: var(--gold);
+            font-size: 11px;
+        }
+
+        .failure-reason {
+            margin-top: 13px;
+            color: #dce2e0;
+            font-size: 12px;
+            line-height: 1.55;
+        }
+
+        .recommendation {
+            margin-top: 11px;
+            padding-top: 11px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .empty-state,
+        .loading {
+            padding: 28px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 24px;
+            padding: 20px 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: 11px;
+        }
+
+        @media (max-width: 1250px) {
+            .kpi-grid,
+            .dimension-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .kpi:nth-child(3) {
+                border-right: 0;
+            }
+
+            .kpi:nth-child(-n+3) {
+                border-bottom: 1px solid var(--border);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .header {
+                position: static;
+                padding: 12px 16px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .brand {
+                min-width: 0;
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .actions {
+                justify-content: flex-start;
+            }
+
+            .kpi-grid,
+            .dimension-grid,
+            .failure-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi {
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <div class="brand">
+        <div class="logo-window">
+            <img
+                src="/static/maaden-logo.png"
+                alt="MAADEN logo"
+            >
+        </div>
+
+        <div class="brand-divider"></div>
+
+        <div class="brand-title">
+            Data Quality Excellence Portal
+        </div>
+    </div>
+
+    <div class="header-right">
+        <div class="avatars">
+            <div class="avatar">LE</div>
+            <div class="avatar">MA</div>
+        </div>
+
+        <div>
+            <div class="team-name">
+                Lyan Esmat &amp; Moath AlSoqair
+            </div>
+            <div class="team-role">
+                Data Quality Team
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div>
+            <div class="eyebrow">
+                Data &amp; AI Platform Governance
+            </div>
+
+            <h1>Enterprise Data Quality Command Center</h1>
+
+            <p class="hero-description">
+                Detailed Data Quality assessment across every
+                Business Term and every DQ dimension, with
+                column-level scores, failure explanations and
+                remediation recommendations.
+            </p>
+        </div>
+
+        <div class="actions">
+            <button
+                id="runPipelineButton"
+                class="button primary"
+            >
+                Run Complete Pipeline
+            </button>
+
+            <a
+                class="button"
+                href="/api/v2/download/dq-results"
+            >
+                Download DQ Results
+            </a>
+
+            <a
+                class="button"
+                href="/api/v2/download/mappings"
+            >
+                Download Mappings
+            </a>
+        </div>
+    </section>
+
+    <div id="statusMessage" class="status-message"></div>
+
+    <section class="kpi-grid">
+        <article class="kpi">
+            <div class="kpi-label">Business Terms</div>
+            <div id="businessTermsKpi" class="kpi-value">—</div>
+            <div class="kpi-note">Terms assessed</div>
+        </article>
+
+        <article class="kpi">
+            <div class="kpi-label">DQ Executions</div>
+            <div id="executionsKpi" class="kpi-value">—</div>
+            <div class="kpi-note">Six dimensions per term</div>
+        </article>
+
+        <article class="kpi">
+            <div class="kpi-label">Passed</div>
+            <div id="passedKpi" class="kpi-value">—</div>
+            <div class="kpi-note">Successful DQ evaluations</div>
+        </article>
+
+        <article class="kpi">
+            <div class="kpi-label">Failed</div>
+            <div id="failedKpi" class="kpi-value">—</div>
+            <div class="kpi-note">DQ issues detected</div>
+        </article>
+
+        <article class="kpi">
+            <div class="kpi-label">Not Executed</div>
+            <div id="notExecutedKpi" class="kpi-value">—</div>
+            <div class="kpi-note">Missing evaluation inputs</div>
+        </article>
+
+        <article class="kpi">
+            <div class="kpi-label">Overall DQ Score</div>
+            <div id="overallScoreKpi" class="kpi-value">—</div>
+            <div class="kpi-note">Calculated result</div>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div class="panel-title-wrap">
+                <div class="section-number">1</div>
+                <h2 class="panel-title">
+                    Data Quality by Dimension
+                </h2>
+            </div>
+
+            <div class="panel-count">Six DAMA dimensions</div>
+        </div>
+
+        <div class="panel-body">
+            <div
+                id="dimensionGrid"
+                class="dimension-grid"
+            >
+                <div class="loading">
+                    Loading dimension scores…
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div class="panel-title-wrap">
+                <div class="section-number">2</div>
+                <h2 class="panel-title">
+                    Column-Level DQ Results
+                </h2>
+            </div>
+
+            <div id="columnCount" class="panel-count"></div>
+        </div>
+
+        <div class="panel-body">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Evaluated Column</th>
+                        <th>DQ Score</th>
+                        <th>Passed</th>
+                        <th>Failed</th>
+                        <th>Not Executed</th>
+                        <th>Total Executions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="columnTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div class="panel-title-wrap">
+                <div class="section-number">3</div>
+                <h2 class="panel-title">
+                    Business Term DQ Results
+                </h2>
+            </div>
+
+            <div id="businessTermCount" class="panel-count"></div>
+        </div>
+
+        <div class="panel-body">
+            <div class="toolbar">
+                <input
+                    id="businessTermSearch"
+                    class="input"
+                    placeholder="Search Business Term or BT ID…"
+                >
+
+                <select
+                    id="businessTermStatus"
+                    class="select"
+                >
+                    <option value="all">All results</option>
+                    <option value="failed">Contains failures</option>
+                    <option value="not-executed">
+                        Contains not executed
+                    </option>
+                    <option value="passed">
+                        All six passed
+                    </option>
+                </select>
+
+                <select
+                    id="businessTermSort"
+                    class="select"
+                >
+                    <option value="lowest">
+                        Lowest score first
+                    </option>
+                    <option value="highest">
+                        Highest score first
+                    </option>
+                    <option value="name">
+                        Business Term name
+                    </option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>BT ID</th>
+                        <th>Business Term</th>
+                        <th>DQ Score</th>
+                        <th>Passed</th>
+                        <th>Failed</th>
+                        <th>Not Executed</th>
+                        <th>Dimensions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="businessTermTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div class="panel-title-wrap">
+                <div class="section-number">4</div>
+                <h2 class="panel-title">
+                    Failed and Not-Executed Rules
+                </h2>
+            </div>
+
+            <div id="failureCount" class="panel-count"></div>
+        </div>
+
+        <div class="panel-body">
+            <div class="toolbar">
+                <input
+                    id="failureSearch"
+                    class="input"
+                    placeholder="Search failures, terms or columns…"
+                >
+
+                <select
+                    id="failureStatus"
+                    class="select"
+                >
+                    <option value="all">
+                        Failed and not executed
+                    </option>
+                    <option value="Failed">Failed only</option>
+                    <option value="Not Executed">
+                        Not executed only
+                    </option>
+                </select>
+
+                <select
+                    id="failureDimension"
+                    class="select"
+                >
+                    <option value="all">All dimensions</option>
+                    <option value="Completeness">
+                        Completeness
+                    </option>
+                    <option value="Validity">Validity</option>
+                    <option value="Accuracy">Accuracy</option>
+                    <option value="Consistency">
+                        Consistency
+                    </option>
+                    <option value="Uniqueness">
+                        Uniqueness
+                    </option>
+                    <option value="Timeliness">
+                        Timeliness
+                    </option>
+                </select>
+            </div>
+
+            <div id="failureGrid" class="failure-grid"></div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div class="panel-title-wrap">
+                <div class="section-number">5</div>
+                <h2 class="panel-title">
+                    Business Term Steward Mapping
+                </h2>
+            </div>
+
+            <div id="mappingCount" class="panel-count"></div>
+        </div>
+
+        <div class="panel-body">
+            <div class="toolbar">
+                <input
+                    id="mappingSearch"
+                    class="input"
+                    placeholder="Search terms, stewards or emails…"
+                >
+
+                <select
+                    id="mappingStatus"
+                    class="select"
+                >
+                    <option value="all">All statuses</option>
+                    <option value="matched">Matched</option>
+                    <option value="needs review">
+                        Needs Review
+                    </option>
+                    <option value="not matched">
+                        Not Matched
+                    </option>
+                </select>
+
+                <div></div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>BT ID</th>
+                        <th>Business Term</th>
+                        <th>Steward Input</th>
+                        <th>Matched Employee</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Job Title</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="mappingTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        MAADEN Data Quality Excellence Portal ·
+        Detailed Business Term Data Quality Assessment
+    </footer>
+</main>
+
+<script>
+    let dashboardData = null;
+    let mappingData = [];
+
+    function escapeHtml(value) {
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function numberValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+    }
+
+    function percentage(value) {
+        return `${numberValue(value).toFixed(2)}%`;
+    }
+
+    function normalizeKey(value) {
+        return String(value)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+    }
+
+    function getValue(record, aliases) {
+        const normalizedRecord = {};
+
+        Object.entries(record || {}).forEach(([key, value]) => {
+            normalizedRecord[normalizeKey(key)] = value;
+        });
+
+        for (const alias of aliases) {
+            const key = normalizeKey(alias);
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    normalizedRecord,
+                    key
+                )
+            ) {
+                return normalizedRecord[key];
+            }
+        }
+
+        return "";
+    }
+
+    function badge(status) {
+        const normalized = String(status)
+            .trim()
+            .toLowerCase()
+            .replaceAll(" ", "-");
+
+        return `
+            <span class="badge ${escapeHtml(normalized)}">
+                ${escapeHtml(status)}
+            </span>
+        `;
+    }
+
+    function setStatus(message, type) {
+        const element = document.getElementById(
+            "statusMessage"
+        );
+
+        element.className = `status-message ${type}`;
+        element.textContent = message;
+    }
+
+    function clearStatus() {
+        const element = document.getElementById(
+            "statusMessage"
+        );
+
+        element.className = "status-message";
+        element.textContent = "";
+    }
+
+    function renderSummary(summary) {
+        document.getElementById(
+            "businessTermsKpi"
+        ).textContent =
+            numberValue(summary.business_terms_assessed);
+
+        document.getElementById(
+            "executionsKpi"
+        ).textContent =
+            numberValue(summary.total_dq_executions);
+
+        document.getElementById(
+            "passedKpi"
+        ).textContent =
+            numberValue(summary.passed);
+
+        document.getElementById(
+            "failedKpi"
+        ).textContent =
+            numberValue(summary.failed);
+
+        document.getElementById(
+            "notExecutedKpi"
+        ).textContent =
+            numberValue(summary.not_executed);
+
+        document.getElementById(
+            "overallScoreKpi"
+        ).textContent =
+            percentage(summary.overall_dq_score);
+    }
+
+    function renderDimensions(dimensions) {
+        const container = document.getElementById(
+            "dimensionGrid"
+        );
+
+        container.innerHTML = dimensions.map((item) => {
+            const score = numberValue(item.score);
+
+            return `
+                <article class="dimension-card">
+                    <div class="dimension-name">
+                        ${escapeHtml(item.dimension)}
+                    </div>
+
+                    <div class="dimension-score">
+                        ${percentage(score)}
+                    </div>
+
+                    <div class="score-track">
+                        <div
+                            class="score-fill"
+                            style="width:${Math.min(
+                                100,
+                                Math.max(0, score)
+                            )}%"
+                        ></div>
+                    </div>
+
+                    <div class="dimension-breakdown">
+                        <div>
+                            <strong>${numberValue(item.passed)}</strong>
+                            Passed
+                        </div>
+
+                        <div>
+                            <strong>${numberValue(item.failed)}</strong>
+                            Failed
+                        </div>
+
+                        <div>
+                            <strong>
+                                ${numberValue(item.not_executed)}
+                            </strong>
+                            Not run
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    function renderColumns(columns) {
+        const tbody = document.getElementById(
+            "columnTableBody"
+        );
+
+        document.getElementById(
+            "columnCount"
+        ).textContent = `${columns.length} evaluated column groups`;
+
+        tbody.innerHTML = columns.map((item) => `
+            <tr>
+                <td>${escapeHtml(item.target_column)}</td>
+                <td class="score-cell">
+                    ${percentage(item.dq_score)}
+                </td>
+                <td>${numberValue(item.passed)}</td>
+                <td>${numberValue(item.failed)}</td>
+                <td>${numberValue(item.not_executed)}</td>
+                <td>${numberValue(item.total_executions)}</td>
+            </tr>
+        `).join("");
+    }
+
+    function renderBusinessTerms() {
+        const search = document.getElementById(
+            "businessTermSearch"
+        ).value.trim().toLowerCase();
+
+        const status = document.getElementById(
+            "businessTermStatus"
+        ).value;
+
+        const sort = document.getElementById(
+            "businessTermSort"
+        ).value;
+
+        let records = [
+            ...dashboardData.business_term_scores
+        ];
+
+        records = records.filter((item) => {
+            const searchable = `
+                ${item.bt_id}
+                ${item.business_term_name}
+            `.toLowerCase();
+
+            if (search && !searchable.includes(search)) {
+                return false;
+            }
+
+            if (
+                status === "failed"
+                && numberValue(item.failed) === 0
+            ) {
+                return false;
+            }
+
+            if (
+                status === "not-executed"
+                && numberValue(item.not_executed) === 0
+            ) {
+                return false;
+            }
+
+            if (
+                status === "passed"
+                && (
+                    numberValue(item.failed) > 0
+                    || numberValue(item.not_executed) > 0
+                )
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+
+        records.sort((a, b) => {
+            if (sort === "highest") {
+                return numberValue(b.dq_score)
+                    - numberValue(a.dq_score);
+            }
+
+            if (sort === "name") {
+                return String(a.business_term_name)
+                    .localeCompare(
+                        String(b.business_term_name)
+                    );
+            }
+
+            return numberValue(a.dq_score)
+                - numberValue(b.dq_score);
+        });
+
+        document.getElementById(
+            "businessTermCount"
+        ).textContent =
+            `${records.length} of ${
+                dashboardData.business_term_scores.length
+            } terms`;
+
+        const tbody = document.getElementById(
+            "businessTermTableBody"
+        );
+
+        if (!records.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        No Business Terms match the selected filters.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = records.map((item) => `
+            <tr>
+                <td>${escapeHtml(item.bt_id)}</td>
+                <td>${escapeHtml(item.business_term_name)}</td>
+                <td class="score-cell">
+                    ${percentage(item.dq_score)}
+                </td>
+                <td>${numberValue(item.passed)}</td>
+                <td>${numberValue(item.failed)}</td>
+                <td>${numberValue(item.not_executed)}</td>
+                <td>${numberValue(item.total_dimensions)}</td>
+            </tr>
+        `).join("");
+    }
+
+    function renderFailures() {
+        const search = document.getElementById(
+            "failureSearch"
+        ).value.trim().toLowerCase();
+
+        const status = document.getElementById(
+            "failureStatus"
+        ).value;
+
+        const dimension = document.getElementById(
+            "failureDimension"
+        ).value;
+
+        const records = dashboardData.failures.filter(
+            (item) => {
+                const searchable = `
+                    ${item.bt_id}
+                    ${item.business_term_name}
+                    ${item.dq_dimension}
+                    ${item.target_column}
+                    ${item.reason}
+                    ${item.recommendation}
+                `.toLowerCase();
+
+                if (
+                    search
+                    && !searchable.includes(search)
+                ) {
+                    return false;
+                }
+
+                if (
+                    status !== "all"
+                    && item.execution_status !== status
+                ) {
+                    return false;
+                }
+
+                if (
+                    dimension !== "all"
+                    && item.dq_dimension !== dimension
+                ) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
+        document.getElementById(
+            "failureCount"
+        ).textContent =
+            `${records.length} issue records`;
+
+        const container = document.getElementById(
+            "failureGrid"
+        );
+
+        if (!records.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    No DQ issues match the selected filters.
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = records.map((item) => {
+            const cardClass =
+                item.execution_status === "Not Executed"
+                    ? "failure-card not-executed"
+                    : "failure-card";
+
+            return `
+                <article class="${cardClass}">
+                    <div class="failure-top">
+                        <div>
+                            <div class="failure-term">
+                                ${escapeHtml(item.bt_id)}
+                                ·
+                                ${escapeHtml(
+                                    item.business_term_name
+                                )}
+                            </div>
+
+                            <div class="failure-meta">
+                                ${escapeHtml(item.dq_dimension)}
+                                ·
+                                ${escapeHtml(item.target_column)}
+                            </div>
+                        </div>
+
+                        ${badge(item.execution_status)}
+                    </div>
+
+                    <div class="failure-reason">
+                        <strong>Reason:</strong>
+                        ${escapeHtml(item.reason)}
+                    </div>
+
+                    <div class="recommendation">
+                        <strong>Recommended action:</strong>
+                        ${escapeHtml(item.recommendation)}
+                    </div>
+                </article>
+            `;
+        }).join("");
+    }
+
+    function renderMappings() {
+        const search = document.getElementById(
+            "mappingSearch"
+        ).value.trim().toLowerCase();
+
+        const selectedStatus = document.getElementById(
+            "mappingStatus"
+        ).value;
+
+        const records = mappingData.filter((item) => {
+            const status = String(
+                getValue(item, [
+                    "mapping_status",
+                    "match_status",
+                    "status"
+                ])
+            ).toLowerCase();
+
+            const searchable = Object.values(item)
+                .join(" ")
+                .toLowerCase();
+
+            if (search && !searchable.includes(search)) {
+                return false;
+            }
+
+            if (
+                selectedStatus !== "all"
+                && status !== selectedStatus
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+
+        document.getElementById(
+            "mappingCount"
+        ).textContent =
+            `${records.length} of ${mappingData.length} mappings`;
+
+        const tbody = document.getElementById(
+            "mappingTableBody"
+        );
+
+        if (!records.length) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        No mappings match the selected filters.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = records.map((item) => {
+            const status = getValue(item, [
+                "mapping_status",
+                "match_status",
+                "status"
+            ]);
+
+            return `
+                <tr>
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "bt_id",
+                            "business_term_id"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "business_term_name",
+                            "business_term"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "data_steward",
+                            "steward_input"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "matched_employee_name",
+                            "matched_employee",
+                            "employee_name"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "email",
+                            "employee_email"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "department",
+                            "department_name"
+                        ]))}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(getValue(item, [
+                            "job_title",
+                            "job title"
+                        ]))}
+                    </td>
+
+                    <td>${badge(status || "Unknown")}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    async function loadDashboard() {
+        clearStatus();
+
+        try {
+            const [dashboardResponse, mappingResponse] =
+                await Promise.all([
+                    fetch("/api/v2/dashboard"),
+                    fetch("/api/v2/mappings")
+                ]);
+
+            if (!dashboardResponse.ok) {
+                const error = await dashboardResponse.json();
+                throw new Error(
+                    error.detail
+                    || "Could not load DQ dashboard data."
+                );
+            }
+
+            if (!mappingResponse.ok) {
+                const error = await mappingResponse.json();
+                throw new Error(
+                    error.detail
+                    || "Could not load mapping data."
+                );
+            }
+
+            dashboardData =
+                await dashboardResponse.json();
+
+            const mappingPayload =
+                await mappingResponse.json();
+
+            mappingData = mappingPayload.results || [];
+
+            renderSummary(dashboardData.summary);
+            renderDimensions(
+                dashboardData.dimension_scores
+            );
+            renderColumns(dashboardData.column_scores);
+            renderBusinessTerms();
+            renderFailures();
+            renderMappings();
+        } catch (error) {
+            setStatus(error.message, "error");
+        }
+    }
+
+    async function runPipeline() {
+        const button = document.getElementById(
+            "runPipelineButton"
+        );
+
+        button.disabled = true;
+        button.textContent = "Running Pipeline…";
+
+        setStatus(
+            "The mapping and Data Quality pipeline is running.",
+            "success"
+        );
+
+        try {
+            const response = await fetch(
+                "/api/v2/run-pipeline",
+                {
+                    method: "POST"
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                const detail =
+                    typeof result.detail === "string"
+                        ? result.detail
+                        : JSON.stringify(result.detail);
+
+                throw new Error(detail);
+            }
+
+            setStatus(
+                "Pipeline completed successfully. "
+                + "The dashboard now displays the latest results.",
+                "success"
+            );
+
+            await loadDashboard();
+        } catch (error) {
+            setStatus(
+                `Pipeline failed: ${error.message}`,
+                "error"
+            );
+        } finally {
+            button.disabled = false;
+            button.textContent = "Run Complete Pipeline";
+        }
+    }
+
+    document.getElementById(
+        "businessTermSearch"
+    ).addEventListener("input", renderBusinessTerms);
+
+    document.getElementById(
+        "businessTermStatus"
+    ).addEventListener("change", renderBusinessTerms);
+
+    document.getElementById(
+        "businessTermSort"
+    ).addEventListener("change", renderBusinessTerms);
+
+    document.getElementById(
+        "failureSearch"
+    ).addEventListener("input", renderFailures);
+
+    document.getElementById(
+        "failureStatus"
+    ).addEventListener("change", renderFailures);
+
+    document.getElementById(
+        "failureDimension"
+    ).addEventListener("change", renderFailures);
+
+    document.getElementById(
+        "mappingSearch"
+    ).addEventListener("input", renderMappings);
+
+    document.getElementById(
+        "mappingStatus"
+    ).addEventListener("change", renderMappings);
+
+    document.getElementById(
+        "runPipelineButton"
+    ).addEventListener("click", runPipeline);
+
+    loadDashboard();
+</script>
+</body>
+</html>
