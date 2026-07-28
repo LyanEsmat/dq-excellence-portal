@@ -1,0 +1,2 @@
+run_id,status,trigger,started_at,finished_at,duration_seconds,completed_steps,failed_step
+RUN-20260728-122552,Completed,Manual,2026-07-28T12:25:52.054728+00:00,2026-07-28T12:26:19.249699+00:00,27.19,7,

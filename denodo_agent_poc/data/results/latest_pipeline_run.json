@@ -1,0 +1,96 @@
+{
+  "run_id": "RUN-20260728-122552",
+  "status": "Completed",
+  "trigger": "Manual",
+  "started_at": "2026-07-28T12:25:52.054728+00:00",
+  "finished_at": "2026-07-28T12:26:19.249699+00:00",
+  "duration_seconds": 27.19,
+  "completed_steps": 7,
+  "failed_step": null,
+  "steps": [
+    {
+      "step_number": 1,
+      "step_name": "Baseline Technical Mapping",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/technical_mapping_engine_v2.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:25:52.055114+00:00",
+      "finished_at": "2026-07-28T12:25:54.349699+00:00",
+      "duration_seconds": 2.29,
+      "stdout": "\nTechnical Mapping Engine V2 completed.\nBusiness Terms: 45\nTechnical columns: 63\nCandidate mappings: 273\nFinal mappings selected: 63\nMapped: 62\nNeeds Review: 1\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/bt_technical_mappings_v2.xlsx\n\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 2,
+      "step_name": "Semantic Mapping Agent",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/agent/semantic_mapping_agent.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:25:54.350893+00:00",
+      "finished_at": "2026-07-28T12:25:55.683242+00:00",
+      "duration_seconds": 1.33,
+      "stdout": "\nSemantic Mapping Agent completed.\nCandidate mappings reviewed: 273\nFinal agent mappings: 63\nApproved: 63\nNeeds Review: 0\nRejected: 0\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/agent_bt_technical_mappings.xlsx\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/agent_mapping_reasoning.xlsx\n\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 3,
+      "step_name": "DQ Rule Planning Agent",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/agent/dq_rule_planning_agent.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:25:55.683400+00:00",
+      "finished_at": "2026-07-28T12:25:56.777153+00:00",
+      "duration_seconds": 1.09,
+      "stdout": "\nDQ Rule Planning Agent completed.\nPhysical mappings: 63\nDimensions per mapping: 6\nTotal rule assessments: 378\nApplicable rules: 259\nNot Applicable: 119\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_rule_registry.xlsx\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_rule_planning_summary.xlsx\n\nDimension planning summary:\ndq_dimension  total_assessments  applicable_rules  not_applicable_rules\nCompleteness                 63                63                     0\n    Validity                 63                63                     0\n    Accuracy                 63                28                    35\n Consistency                 63                35                    28\n  Uniqueness                 63                 7                    56\n  Timeliness                 63                63                     0\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 4,
+      "step_name": "Email Rule Validation Repair",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/agent/repair_email_rule.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:25:56.777399+00:00",
+      "finished_at": "2026-07-28T12:25:57.707204+00:00",
+      "duration_seconds": 0.93,
+      "stdout": "\nEmail rule repaired successfully.\nEmail-format rules updated: 7\nCorrect pattern: {\"pattern\": \"^[^@\\\\s]+@[^@\\\\s]+\\\\.[^@\\\\s]+$\"}\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_rule_registry.xlsx\n\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 5,
+      "step_name": "Batch DQ Execution",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/engines/batch_dq_executor_v2.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:25:57.707635+00:00",
+      "finished_at": "2026-07-28T12:26:16.566145+00:00",
+      "duration_seconds": 18.86,
+      "stdout": "\nStarting corrected batch DQ execution...\nLoaded ALU: 8,000 records\nLoaded FIN: 8,000 records\nLoaded GGM: 8,000 records\nLoaded HR: 8,000 records\nLoaded PDE: 8,000 records\nLoaded PHO: 8,000 records\nLoaded PRO: 8,000 records\nProcessed 50/378 assessments\nProcessed 100/378 assessments\nProcessed 150/378 assessments\nProcessed 200/378 assessments\nProcessed 250/378 assessments\nProcessed 300/378 assessments\nProcessed 350/378 assessments\n\nCorrected Batch DQ execution completed.\nSource files: 7\nSource records: 56,000\nPlanned assessments: 378\nApplicable rules: 259\nExecuted rules: 259\nPassed rules: 112\nFailed rules: 147\nNot Executed: 0\nNot Applicable: 119\nExecution coverage: 100.0%\nEvaluated record checks: 2,067,065\nFailed record checks: 36,016\nOverall DQ score: 98.26%\nFailure detail rows: 36,016\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_execution_results.xlsx\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_failed_records.csv\n\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 6,
+      "step_name": "DQ Insights Agent",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/agent/dq_insights_agent.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:26:16.566335+00:00",
+      "finished_at": "2026-07-28T12:26:18.359465+00:00",
+      "duration_seconds": 1.79,
+      "stdout": "\nDQ Insights Agent completed.\nOverall DQ score: 98.26%\nData Quality health: Good\nPrioritized insights: 147\nCritical insights: 0\nHigh insights: 63\nTop issue: Business Unit Code in ALU has 400 Timeliness failures.\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_agent_insights.xlsx\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/dq_agent_insights.json\n\n",
+      "stderr": ""
+    },
+    {
+      "step_number": 7,
+      "step_name": "Insight Consolidation Agent",
+      "script": "/workspaces/dq-excellence-portal/denodo_agent_poc/src/agent/insight_consolidation_agent.py",
+      "status": "Completed",
+      "return_code": 0,
+      "started_at": "2026-07-28T12:26:18.359641+00:00",
+      "finished_at": "2026-07-28T12:26:19.249585+00:00",
+      "duration_seconds": 0.89,
+      "stdout": "\nInsight Consolidation Agent completed.\nOriginal rule insights: 147\nConsolidated issues: 91\nRepeated alerts removed: 56\nCritical issues: 0\nHigh issues: 7\nTop issue: ALU: 400 records in aluminum_production contain stale or invalid last_updated values.\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/consolidated_dq_insights.xlsx\nSaved: /workspaces/dq-excellence-portal/denodo_agent_poc/data/results/consolidated_dq_insights.json\n\n",
+      "stderr": ""
+    }
+  ]
+}
