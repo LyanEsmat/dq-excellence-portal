@@ -1,0 +1,106 @@
+name: DQ Pipeline CI
+
+on:
+  push:
+    branches:
+      - main
+      - denodo-agent-development
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate DQ Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Compile Python source
+        run: |
+          python -m compileall \
+            denodo_agent_poc/src \
+            denodo_agent_poc/config \
+            denodo_agent_poc/tests
+
+      - name: Validate generated enterprise data
+        run: |
+          python denodo_agent_poc/tests/validate_generated_data.py
+
+      - name: Test Excel data-source adapter
+        run: |
+          python denodo_agent_poc/tests/test_excel_data_source.py
+
+      - name: Evaluate semantic mapping agent
+        run: |
+          python denodo_agent_poc/tests/evaluate_semantic_agent.py
+
+      - name: Test Batch DQ Executor V3 results
+        run: |
+          python denodo_agent_poc/tests/test_batch_dq_executor_v3.py
+
+      - name: Validate deployment configuration
+        run: |
+          cp .env.example .env
+          python denodo_agent_poc/config/deployment_settings.py
+
+      - name: Build deployment container
+        run: |
+          docker build \
+            -t dq-excellence-portal:ci \
+            .
+
+      - name: Start deployment container
+        run: |
+          docker run -d \
+            --name dq-portal-ci \
+            --env-file .env \
+            -p 8000:8000 \
+            dq-excellence-portal:ci
+
+      - name: Wait for healthy deployment
+        run: |
+          for attempt in {1..20}; do
+            status="$(
+              docker inspect \
+                --format='{{.State.Health.Status}}' \
+                dq-portal-ci
+            )"
+
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          docker logs dq-portal-ci
+          exit 1
+
+      - name: Verify deployed portal
+        run: |
+          python denodo_agent_poc/tests/verify_deployment.py
+
+      - name: Show container logs on failure
+        if: failure()
+        run: |
+          docker logs dq-portal-ci || true
+
+      - name: Stop test container
+        if: always()
+        run: |
+          docker rm -f dq-portal-ci || true
