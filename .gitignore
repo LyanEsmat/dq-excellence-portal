@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.coverage
+htmlcov/
 
 # Virtual environments
 .venv/
@@ -11,15 +13,37 @@ venv/
 .idea/
 .vscode/
 
-# Secrets
+# Secrets and credentials
 .env
 .env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
 
-# Uploaded and generated production files
+# Original portal uploads and runtime data
 uploads/*
 data/*
 !uploads/.gitkeep
 !data/.gitkeep
+
+# Agent production runtime data
+denodo_agent_poc/runtime_data/
+denodo_agent_poc/data/private/
+denodo_agent_poc/data/incoming/
+
+# Denodo connection files
+denodo_agent_poc/config/denodo.local.json
+denodo_agent_poc/config/credentials.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+pipeline.lock
 
 # Operating system files
 .DS_Store
