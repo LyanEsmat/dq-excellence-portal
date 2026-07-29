@@ -1,0 +1,43 @@
+services:
+  dq-excellence-portal:
+    image: dq-excellence-portal:poc
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: dq-portal
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    restart: unless-stopped
+
+    volumes:
+      - dq-results:/app/denodo_agent_poc/data/results
+      - dq-runtime:/app/denodo_agent_poc/runtime_data
+
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen(
+          'http://127.0.0.1:8000/portal-status',
+          timeout=5)
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+
+volumes:
+  dq-results:
+    name: dq-excellence-results
+
+  dq-runtime:
+    name: dq-excellence-runtime
