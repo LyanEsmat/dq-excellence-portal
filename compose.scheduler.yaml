@@ -1,0 +1,29 @@
+services:
+  dq-scheduler:
+    image: dq-excellence-portal:poc
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: dq-scheduler
+
+    env_file:
+      - .env
+
+    command:
+      - python
+      - denodo_agent_poc/src/agent/scheduled_pipeline_runner.py
+
+    restart: on-failure
+
+    depends_on:
+      dq-excellence-portal:
+        condition: service_healthy
+
+    volumes:
+      - dq-results:/app/denodo_agent_poc/data/results
+      - dq-runtime:/app/denodo_agent_poc/runtime_data
+
+    profiles:
+      - scheduler
