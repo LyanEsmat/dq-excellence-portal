@@ -37,6 +37,14 @@ jobs:
             denodo_agent_poc/config \
             denodo_agent_poc/tests
 
+      - name: Create safe CI configuration
+        run: |
+          cp .env.example .env
+
+      - name: Validate deployment configuration
+        run: |
+          python denodo_agent_poc/config/deployment_settings.py
+
       - name: Validate generated enterprise data
         run: |
           python denodo_agent_poc/tests/validate_generated_data.py
@@ -45,6 +53,10 @@ jobs:
         run: |
           python denodo_agent_poc/tests/test_excel_data_source.py
 
+      - name: Run deployment-configured pipeline
+        run: |
+          python denodo_agent_poc/src/agent/pipeline_orchestrator_v3.py
+
       - name: Evaluate semantic mapping agent
         run: |
           python denodo_agent_poc/tests/evaluate_semantic_agent.py
@@ -52,11 +64,6 @@ jobs:
       - name: Test Batch DQ Executor V3 results
         run: |
           python denodo_agent_poc/tests/test_batch_dq_executor_v3.py
-
-      - name: Validate deployment configuration
-        run: |
-          cp .env.example .env
-          python denodo_agent_poc/config/deployment_settings.py
 
       - name: Build deployment container
         run: |
@@ -82,9 +89,11 @@ jobs:
             )"
 
             if [ "$status" = "healthy" ]; then
+              echo "Deployment is healthy."
               exit 0
             fi
 
+            echo "Waiting for deployment health: $status"
             sleep 5
           done
 
